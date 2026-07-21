@@ -289,7 +289,7 @@ class InputLocker:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Lock keyboard (and optionally all mouse/trackpad) input on macOS.",
+        description="Lock keyboard (and optionally all mouse/trackpad) input on macOS",
         epilog=(
             "Safety: Press your custom kill switch at any time to unlock early.\n"
             "Requires: macOS Accessibility permissions."
@@ -303,16 +303,23 @@ if __name__ == "__main__":
         help="Duration to lock (e.g., 5, 10s, 2m, 1h). Must be a positive integer"
     )
     parser.add_argument(
-        "-k", "--set-key",
+        "-k", "--set-key", metavar="KEY",
         help="Key combination to unlock for this run (overrides default)"
     )
-    parser.add_argument(
-        "-e", "--everything", action="store_true",
-        help="Lock keyboard, mouse clicks and trackpad gestures."
-    )
+    
     parser.add_argument(
         "-d", "--default", metavar="KEY",
-        help="Permanently set a new default key combination (e.g., -d 'cmd+q')."
+        help="Permanently set a new default key combination (e.g., -d 'cmd+q')"
+    )
+    
+    parser.add_argument(
+        "-e", "--everything", action="store_true",
+        help="Lock keyboard, mouse clicks and trackpad gestures"
+    )
+    
+    parser.add_argument(
+        "-c", "--close-terminal", action="store_true", 
+        help="Close the terminal immediately after launching the lock"
     )
 
     parser.add_argument("--daemon-run", action="store_true", help=argparse.SUPPRESS)
@@ -336,7 +343,7 @@ if __name__ == "__main__":
     # --- NORMAL RUN MODE ---
     if not args.duration:
         print("Error: Duration is required.")
-        print("Usage: lk <duration> [-e] [-k 'cmd+q']")
+        print("Usage: lk <duration> [-c] [-e] [-k 'cmd+q']")
         print("       lk -d 'cmd+q'  (to set default keybind)")
         print("Duration formats: 5 (5 seconds), 5s (5 seconds), 2m (2 minutes), 1h (1 hours)")
         sys.exit(1)
@@ -384,7 +391,7 @@ if __name__ == "__main__":
         print("\n  ERROR: Missing Accessibility permissions!")
         print("\n   To grant permissions:")
         print("   1. Open: System Settings > Privacy & Security > Accessibility")
-        print("   2. Add Terminal (or your terminal app) to the list")
+        print("   2. Add your terminal app (or VSCode/others if you're using VSCode's terminal or any other terminal) to the list")
         print("   3. Make sure it's toggled ON")
         print("   4. Run this program again")
         sys.exit(1)
@@ -401,6 +408,9 @@ if __name__ == "__main__":
 
     if args.everything:
         cmd.append("--everything")
+    
+    if args.close_terminal:
+        cmd.append("--close-terminal")
 
     subprocess.Popen(
         cmd,
@@ -409,5 +419,14 @@ if __name__ == "__main__":
         stdin=subprocess.DEVNULL,
         start_new_session=True
     )
+    
+    if args.close_terminal:
+        # Close the terminal app immediately after launching the lock
+        try:
+            ppid = os.getppid() # get the parent process id (the terminal)
+            # Use 'kill' command to terminate the parent process
+            subprocess.run(['kill', '-9', str(ppid)], check=True)
+        except Exception as e:
+            print(f"Error closing terminal: {e}")
 
     sys.exit(0)

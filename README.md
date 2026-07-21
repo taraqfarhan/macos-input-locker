@@ -1,17 +1,15 @@
-# macOS Input Locker (`lk`)
-
+# macOS Input Locker
 Temporarily locks and pauses keyboard (and optionally mouse/trackpad) input for a specified duration. It includes a safety kill switch key combination to unlock the system early. This program is useful for cleaning your Mac's keyboard/mouse/trackpad, preventing accidental key presses, or keeping curious friends (foes) from messing with your computer.
 
---- 
+---
 
-```
-macOS Input Locker (lk)
-
-Pauses keyboard input (optionally mouse/trackpad clicks/scrolls/gestures) for a specified duration.
+## Overview
+`lk` pauses keyboard input (optionally mouse/trackpad clicks/scrolls/gestures) for a specified duration.
 Safety kill switch: Press a custom key combination to unlock early. ("ctrl+u" is set as the default keybind)
 
+```
 Usage:
-  lk <duration> [-k "ctrl+u"] [-e]
+  lk <duration> [-c] [-e] [-k "ctrl+u"]
   lk -d "ctrl+q"   (sets a new permanent default keybind)
 
 Duration formats:
@@ -21,18 +19,34 @@ Duration formats:
   1h     (1 hour)
 
 Examples:
-  lk 60               # pause keyboard inputs for 60 seconds
-  lk 2m               # pause keyboard inputs for 2 minutes
-  lk -e 1h            # pause keyboard, mouse and trackpad inputs/gestures/scrolls for 1 hour
-  lk -k "ctrl+q" 20m  # pause keyboard input for 20 minutes while setting a temporary key "ctrl+q"
-  lk -q "ctrl+q"      # set a new permanent default keybind (saved in ~/.lk_config file)
+  # pause keyboard inputs for 60 seconds
+  lk 60               
+
+  # pause keyboard inputs for 2 minutes
+  lk 2m           
+
+  # pause keyboard, mouse and trackpad inputs/gestures/scrolls for 1 hour
+  lk -e 1h            
+  
+  # pause keyboard input for 20 minutes while setting a temporary key "ctrl+q"
+  lk -k "ctrl+q" 20m  
+  
+  # set a new permanent default keybind (saved in ~/.lk_config file)
+  lk -d "ctrl+q"      
+
+  # quit the terminal immediately after starting the lock while pausing keyboard input for 10 minutes
+  lk -c 10m
+
+  # quit the terminal immediately after starting the lock while setting a temporary key "ctrl+q"
+  lk -c -k "ctrl+q" 10m
+
+  # quit the terminal immediately after starting the lock while locking everything for 10 minutes
+  lk -c -e 10m
 
 Requirements:
-  - macOS
-  - Accessibility permissions:
+  Accessibility permissions:
       System Settings > Privacy & Security > Accessibility
 ```
-
 ---
 
 ## Installation & Setup
@@ -63,10 +77,10 @@ lk <duration> [flags]
 
 | Flag | Long Flag | Description |
 |---|---|---|
-| `-e` | `--everything` | Lock keyboard, mouse clicks, scrolls, and trackpad gestures. |
-| `-k KEY` | `--set-key KEY` | Override default unlock combination for this specific run. |
-| `-d KEY` | `--default KEY` | Permanently save a new default key combination to `~/.lk_config`. |
-
+| `-e` | `--everything` | Lock keyboard, mouse clicks, scrolls, and trackpad gestures |
+| `-k KEY` | `--set-key KEY` | Override default unlock combination for this specific run |
+| `-d KEY` | `--default KEY` | Permanently save a new default key combination to `~/.lk_config` |
+| `-c` | `--close-terminal` | Quit the terminal immediately after starting the lock |
 
 ---
 
