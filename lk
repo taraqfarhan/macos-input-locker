@@ -137,9 +137,7 @@ def parse_duration(duration_str):
     Parses duration strings like '5', '10s', '2m', '1h'.
     Returns total seconds as an integer.
     """
-    if not duration_str:
-        return None
-
+    
     # Regex: Start with one or more digits, optionally followed by s, m, or h. Case-insensitive.
     match = re.match(r"^(\d+)([smh]?)$", duration_str.lower())
     if not match:
@@ -250,7 +248,7 @@ class InputLocker:
         return event
 
     def _timer_thread(self):
-        while not self.should_exit:
+        while not self.should_exit and self.start_time is not None:
             elapsed = time.time() - self.start_time
             if elapsed >= self.duration:
                 cf.CFRunLoopStop(cf.CFRunLoopGetMain())
@@ -304,12 +302,12 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-k", "--set-key", metavar="KEY",
-        help="Key combination to unlock for this run (overrides default)"
+        help="Keybind to unlock for this run only (temporarily overrides default)"
     )
     
     parser.add_argument(
         "-d", "--default", metavar="KEY",
-        help="Permanently set a new default key combination (e.g., -d 'cmd+q')"
+        help="Permanently set a new default keybind"
     )
     
     parser.add_argument(
@@ -319,7 +317,7 @@ if __name__ == "__main__":
     
     parser.add_argument(
         "-c", "--close-terminal", action="store_true", 
-        help="Close the terminal immediately after launching the lock"
+        help="Close the terminal window immediately after launching the lock"
     )
 
     parser.add_argument("--daemon-run", action="store_true", help=argparse.SUPPRESS)
@@ -420,8 +418,8 @@ if __name__ == "__main__":
         start_new_session=True
     )
     
+    # Close the terminal window immediately after launching the lock
     if args.close_terminal:
-        # Close the terminal app immediately after launching the lock
         try:
             ppid = os.getppid() # get the parent process id (the terminal)
             # Use 'kill' command to terminate the parent process
