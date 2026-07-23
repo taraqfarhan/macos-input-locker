@@ -1,5 +1,7 @@
 # macOS input locker
-Temporarily locks and pauses keyboard (and optionally mouse/trackpad) input for a specified duration. It includes a safety kill switch keybind (by default `ctrl+u`) to unlock the system early. This program is useful for cleaning your mac's keyboard/mouse/trackpad, preventing accidental key presses, or keeping curious friends (foes) from messing with your computer.
+Temporarily locks and pauses keyboard (and optionally mouse/trackpad) input for a specified duration. It includes a safety kill switch keybind (by default `ctrl+u`) to unlock the system early. 
+
+This program is useful for cleaning mac's keyboard/mouse/trackpad, preventing accidental key presses, or keeping curious friends (or foes) from messing with your mac.
 
 ---
 
@@ -14,7 +16,7 @@ Usage:
 
 Flags:
   -c         Close the terminal window immediately after starting the lock
-  -e         Lock keyboard, mouse clicks, scrolls, and trackpad gestures
+  -e         Lock everything (keyboard, mouse clicks, scrolls, and trackpad gestures)
   -k <KEY>   Override default unlock keybind for this specific run 
   -d <KEY>   Permanently save a new default keybind to `~/.lk_config` 
              "ctrl+u" is used by-default without any modification
@@ -26,33 +28,33 @@ Duration formats:
   1h     (1 hour)
 
 Examples:
-  # pause keyboard inputs for 60 seconds
+  # lock keyboard inputs for 60 seconds
   lk 60               
 
-  # pause keyboard inputs for 2 minutes
+  # lock keyboard inputs for 2 minutes
   lk 2m           
 
-  # pause keyboard, mouse and trackpad inputs/clicks/gestures/scrolls for 1 hour
+  # lock everything (keyboard, mouse and trackpad) for 1 hour
   lk -e 1h            
 
-  # close the terminal window immediately and pause keyboard inputs for 2 minutes
+  # close the terminal window immediately and lock keyboard inputs for 2 minutes
   lk -c 2m  
   
-  # pause keyboard input for 20 minutes while setting a temporary key "ctrl+q"
+  # lock keyboard input for 20 minutes while setting a temporary key "ctrl+q"
   lk -k "ctrl+q" 20m  
   
   # set a new permanent default keybind (saved in ~/.lk_config file)
   lk -d "ctrl+q"      
 
   # we can also combine multiple flags 
-  # close the terminal window immediately, pause keyboard and mouse/trackpad inputs,
+  # lock everything & close the terminal window immediately
+  lk -c -e 10m
+  lk -ce 10m
+
+  # lock everything, close the terminal window immediately
   # and set a temporary keybind for unlocking
   lk -c -e -k "ctrl+q" 10m
   lk -cek "ctrl+q" 10m  
-
-  # close the terminal window immediately, pause keyboard and mouse/trackpad inputs
-  lk -c -e 10m
-  lk -ce 10m
 ```
 ---
 
